@@ -29,10 +29,15 @@ const HomePage: React.FC = () => {
         onOpen();
     };
 
+    const handleModalClose = () => {
+        setSelectedCountry(null); // Réinitialise la sélection
+        onClose(); // Ferme la modal
+    };
+
     return (
-        <>
-            <Earth onCountrySelect={handleCountrySelect} />
-            <Drawer isOpen={isOpen} onOpenChange={(isOpen) => !isOpen && onClose()}>
+        <div className="homepage">
+            <Earth onCountrySelect={handleCountrySelect} isModalOpen={isOpen} />
+            <Drawer isOpen={isOpen} onOpenChange={(isOpen) => !isOpen && handleModalClose()}>
                 <DrawerContent>
                     <DrawerHeader className="flex flex-col gap-1">
                         {selectedCountry?.properties.ADMIN || "Select a Country"}
@@ -42,6 +47,8 @@ const HomePage: React.FC = () => {
                             <>
                                 <p><b>Country:</b> {selectedCountry.properties.ADMIN}</p>
                                 <p><b>ISO Code:</b> {selectedCountry.properties.ISO_A2}</p>
+                                <p><b>GDP Estimate:</b> {selectedCountry.properties.GDP_MD_EST.toLocaleString()} USD</p>
+                                <p><b>Population:</b> {selectedCountry.properties.POP_EST.toLocaleString()}</p>
                             </>
                         ) : (
                             <p>No country selected. Please click on a country to see details.</p>
@@ -53,13 +60,13 @@ const HomePage: React.FC = () => {
                             label="Notes"
                             placeholder="Add your notes here"
                         />
-                        <Button color="primary" onPress={onClose}>
+                        <Button color="primary" onPress={handleModalClose}>
                             Close
                         </Button>
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
-        </>
+        </div>
     );
 };
 

@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Globe from "react-globe.gl";
-import { scaleSequentialSqrt } from "d3-scale";
-import { interpolateBlues } from "d3-scale-chromatic";
+
 
 interface Country {
     properties: {
@@ -11,17 +10,20 @@ interface Country {
         POP_EST: number; // Population estimée
     };
     geometry: {
-        coordinates: any; // Coordonnées géographiques
+        type: string;
+        coordinates: any;
     };
 }
 
 interface EarthProps {
     onCountrySelect: (country: Country) => void;
+    isModalOpen: boolean;
 }
 
-const Earth: React.FC<EarthProps> = ({ onCountrySelect }) => {
+const Earth: React.FC<EarthProps> = ({ onCountrySelect, isModalOpen }) => {
     const [countries, setCountries] = useState<{ features: Country[] }>({ features: [] });
     const [hoverD, setHoverD] = useState<Country | null>(null);
+    const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
     const globeRef = React.useRef<any>(null);
 
     useEffect(() => {
@@ -33,29 +35,43 @@ const Earth: React.FC<EarthProps> = ({ onCountrySelect }) => {
             .then(setCountries);
     }, []);
 
-    const colorScale = scaleSequentialSqrt(interpolateBlues);
+    useEffect(() => {
+        if (!isModalOpen) {
+            // Si la modal est fermée, supprimer la sélection
+            setSelectedCountry(null);
+        }
+    }, [isModalOpen]);
 
-    const getVal = (feat: Country) =>
-        feat.properties.GDP_MD_EST / Math.max(1e5, feat.properties.POP_EST);
+    const calculateCentroid = (country: Country): { lat: number; lng: number } => {
+        if (!country.geometry || !country.geometry.coordinates) {
+            return { lat: 0, lng: 0 };
+        }
 
-    const maxVal = useMemo(
-        () => Math.max(...countries.features.map(getVal)),
-        [countries]
-    );
-    colorScale.domain([0, maxVal]);
+        const { type, coordinates } = country.geometry;
 
-    const calculateCentroid = (coordinates: any): { lat: number; lng: number } => {
-        if (!coordinates || coordinates.length === 0) return { lat: 0, lng: 0 };
+        if (type === "MultiPolygon") {
+            const merged = coordinates.flat(1); // Combine all polygons
+            return calculateCentroidFromPolygon(merged);
+        } else if (type === "Polygon") {
+            return calculateCentroidFromPolygon(coordinates);
+        } else {
+            return { lat: 0, lng: 0 };
+        }
+    };
 
-        // Récupération des coordonnées du premier polygone pour calculer le centroïde
-        const [lngSum, latSum] = coordinates[0][0].reduce(
-            ([lngAcc, latAcc]: number[], [lng, lat]: number[]) => [
-                lngAcc + lng,
-                latAcc + lat,
-            ],
-            [0, 0]
-        );
-        const totalPoints = coordinates[0][0].length;
+    const calculateCentroidFromPolygon = (coordinates: any[]): { lat: number; lng: number } => {
+        let totalPoints = 0;
+        let lngSum = 0;
+        let latSum = 0;
+
+        coordinates.forEach((polygon) => {
+            polygon.forEach(([lng, lat]: [number, number]) => {
+                lngSum += lng;
+                latSum += lat;
+                totalPoints++;
+            });
+        });
+
         return {
             lat: latSum / totalPoints,
             lng: lngSum / totalPoints,
@@ -63,34 +79,43 @@ const Earth: React.FC<EarthProps> = ({ onCountrySelect }) => {
     };
 
     const handlePolygonClick = (country: Country) => {
-        const { lat, lng } = calculateCentroid(country.geometry.coordinates);
+        const centroid = calculateCentroid(country);
+        setSelectedCountry(country);
 
         if (globeRef.current) {
-            globeRef.current.pointOfView({ lat, lng, altitude: 1.5 }, 1000);
+            globeRef.current.pointOfView({ ...centroid, altitude: 1.5 }, 1000);
         }
         onCountrySelect(country);
     };
 
     return (
-        <Globe
-            ref={globeRef}
-            globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-            backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
-            lineHoverPrecision={0}
-            polygonsData={countries.features.filter((d) => d.properties.ISO_A2 !== "AQ")}
-            polygonAltitude={(d) => (d === hoverD ? 0.12 : 0.06)}
-            polygonCapColor={(d) =>
-                d === hoverD ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.3)"
-            }
-            polygonSideColor={() => "rgba(255, 255, 255, 0.1)"}
-            polygonStrokeColor={() => "rgba(255, 255, 255, 0.5)"}
-            polygonLabel={({ properties: d }) => (
-                `<div><b>${d.ADMIN} (${d.ISO_A2}):</b></div>`
-            )}
-            onPolygonHover={setHoverD}
-            onPolygonClick={handlePolygonClick}
-            polygonsTransitionDuration={300}
-        />
+        <div className={isModalOpen ? "globe-container modal-open" : "globe-container"}>
+            <Globe
+                ref={globeRef}
+                globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+                backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+                lineHoverPrecision={0}
+                polygonsData={countries.features.filter((d) => d.properties.ISO_A2 !== "AQ")}
+                polygonAltitude={(d) =>
+                    d === hoverD || d === selectedCountry ? 0.12 : 0.06
+                }
+                polygonCapColor={(d) =>
+                    d === selectedCountry
+                        ? "rgba(255, 255, 255, 0.9)" // Pays sélectionné en surbrillance
+                        : d === hoverD
+                            ? "rgba(255, 255, 255, 0.7)" // Pays survolé
+                            : "rgba(255, 255, 255, 0.3)" // Autres pays
+                }
+                polygonSideColor={() => "rgba(255, 255, 255, 0.1)"}
+                polygonStrokeColor={() => "rgba(255, 255, 255, 0.5)"}
+                polygonLabel={({ properties: d }) => (
+                    `<div><b>${d.ADMIN} (${d.ISO_A2}):</b></div>`
+                )}
+                onPolygonHover={setHoverD}
+                onPolygonClick={handlePolygonClick}
+                polygonsTransitionDuration={300}
+            />
+        </div>
     );
 };
 
