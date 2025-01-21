@@ -1,20 +1,14 @@
 import './App.css'
 import {Route, Routes} from "react-router";
-import HomePage from './components/HomePage.tsx'
-import Earth from "./components/Earth.tsx";
 import {HeroUIProvider} from "@heroui/react";
+import HomePage from "./components/HomePage.tsx";
 
 function App() {
     return (
         <HeroUIProvider>
             <Routes>
-                <Route path="/" element={<Earth/>}>
-
+                <Route path="/" element={<HomePage/>}>
                 </Route>
-                <Route path="/earth" element={<HomePage/>}>
-
-                </Route>
-
             </Routes>
         </HeroUIProvider>
     )
