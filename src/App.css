@@ -2,13 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.globe-container {
-    transition: transform 1s ease, width 1s ease;
-    transform: translateX(0);
-    width: 100%;
-}
 
-.globe-container.modal-open {
-    transform: translateX(-20%); /* Décale à gauche */
-    width: 80%; /* Rétrécit le globe */
-}
+
+
+
+
+
