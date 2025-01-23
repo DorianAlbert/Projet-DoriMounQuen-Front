@@ -1,31 +1,31 @@
-import React, { useState } from "react";
-import { RadioGroup, Radio, Input, Button } from "@heroui/react";
+import React, { useState } from 'react'
+import { RadioGroup, Radio, Input, Button } from '@heroui/react'
 
-const NewForm: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [inputValue, setInputValue] = useState<string>("");
+export default function NewForm() {
+  const [selectedOption, setSelectedOption] = useState<string | null>(null)
+  const [inputValue, setInputValue] = useState<string>('')
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (inputValue.trim() === "") {
-      setSelectedOption(event.target.value);
+    if (!inputValue.trim()) {
+      setSelectedOption(event.target.value)
     }
-  };
+  }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
+  const handleInputChange = (value: string) => {
+    setInputValue(value)
     // If text is entered, reset the selected option
-    if (event.target.value.trim() !== "") {
-      setSelectedOption(null);
+    if (value.trim() !== '') {
+      setSelectedOption(null)
     }
-  };
+  }
 
   const handleSubmit = () => {
     if (inputValue.trim()) {
-      console.log("Submit with custom text:", inputValue);
+      console.log('Submit with custom text:', inputValue)
     } else {
-      console.log("Submit with category:", selectedOption);
+      console.log('Submit with category:', selectedOption)
     }
-  };
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -44,7 +44,6 @@ const NewForm: React.FC = () => {
           Gastronomie
         </Radio>
       </RadioGroup>
-
       <Input
         isReadOnly={false}
         className="max-w-xs"
@@ -52,14 +51,11 @@ const NewForm: React.FC = () => {
         label="Custom Text"
         type="text"
         variant="bordered"
-        onChange={handleInputChange} // Handles text input change
+        onValueChange={handleInputChange}
       />
-
       <Button color="primary" onPress={handleSubmit}>
         Submit
       </Button>
     </div>
-  );
-};
-
-export default NewForm;
+  )
+}

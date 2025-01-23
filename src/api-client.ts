@@ -1,12 +1,12 @@
 import Axios, { AxiosRequestConfig } from 'axios'
-import { User, UserCredentials, UserForCreate } from './types'
+import { AccessToken, User, UserCredentials, UserForCreate } from './types'
 
 export interface ApiError extends Error {}
 
 export class ApiClient {
   private readonly authorization: { Authorization: string }
 
-  constructor(private readonly token: string) {
+  private constructor(private readonly token: string) {
     this.authorization = { Authorization: `Bearer ${token}` }
   }
 
@@ -45,8 +45,8 @@ export class ApiClient {
    * @param creds User credentials (username & password).
    */
   public static async authenticate(creds: UserCredentials): Promise<ApiClient> {
-    return Axios.post<string>('auth/sign-in', creds, ApiClient.config()).then(
-      r => new ApiClient(r.data)
+    return Axios.post<AccessToken>('auth/sign-in', creds, ApiClient.config()).then(
+      r => new ApiClient(r.data.accessToken)
     )
   }
 }

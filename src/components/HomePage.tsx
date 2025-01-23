@@ -1,42 +1,17 @@
-import React, { useState } from "react";
-import Earth from "../components/Earth";
-import Modal from "../components/Modal";
+import RequireAuthentication from '../contexts/RequireAuthentication'
+import SelectedCountryProvider from '../contexts/SelectedCountryProvider'
+import Earth from './Earth'
+import SidePanel from './SidePanel'
 
-interface Country {
-    properties: {
-        ADMIN: string; // Nom du pays
-        ISO_A2: string; // Code ISO
-        GDP_MD_EST: number; // PIB estimé
-        POP_EST: number; // Population estimée
-    };
+export default function HomePage() {
+  return (
+    <div className="homepage">
+      <SelectedCountryProvider>
+        <Earth />
+        <RequireAuthentication>
+          <SidePanel />
+        </RequireAuthentication>
+      </SelectedCountryProvider>
+    </div>
+  )
 }
-
-const HomePage: React.FC = () => {
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-
-    const handleCountrySelect = (country: Country) => {
-        setSelectedCountry(country);
-        setModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setSelectedCountry(null);
-        setModalOpen(false);
-    };
-
-    return (
-      <div className="homepage">
-          <Earth onCountrySelect={handleCountrySelect} />
-          {selectedCountry && (
-            <Modal
-              isOpen={isModalOpen}
-              onClose={handleModalClose}
-              country={selectedCountry}
-            />
-          )}
-      </div>
-    );
-};
-
-export default HomePage;
