@@ -1,11 +1,22 @@
 import { Form, Button, Input } from '@heroui/react'
 import { useState } from 'react'
-import { UserForCreate } from '../../types'
+import { User, UserForCreate } from '../../types'
+import { useMutation } from '@tanstack/react-query'
+import { ApiClient } from '../../api-client'
 
 export default function SignUpForm() {
   const [data, setData] = useState<UserForCreate>({ username: '', password: '' })
-  const onSubmit = () => {}
+  
+  const { mutate } = useMutation<User, unknown, UserForCreate>({
+    mutationFn: data => ApiClient.register(data),
+    onError: e => console.log(e)
+  })
 
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    mutate(data)
+  }
+  
   return (
     <Form
       className="w-full max-w-xs flex flex-col gap-4"

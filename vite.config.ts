@@ -6,6 +6,15 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: '../dist',
-    minify: true,
+    minify: true
+  },
+  server: {
+    proxy: {
+      '/api/': {
+        target: 'http://localhost:8000/',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '')
+      }
+    }
   }
 })

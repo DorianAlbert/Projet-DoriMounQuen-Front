@@ -18,13 +18,13 @@ export class ApiClient {
    */
   private static config<D = any>(cfg?: AxiosRequestConfig<D>): AxiosRequestConfig<D> {
     return {
-      baseURL: 'http://localhost:8080/',
+      baseURL: '/api',
       ...cfg
     }
   }
 
   public async fetchSelf(): Promise<User> {
-    return Axios.get<User>('/users/me', ApiClient.config({ headers: this.authorization })).then(
+    return Axios.get<User>('/user/me', ApiClient.config({ headers: this.authorization })).then(
       d => d.data
     )
   }
@@ -36,7 +36,7 @@ export class ApiClient {
    * @returns
    */
   public static async register(data: UserForCreate): Promise<User> {
-    return Axios.post<User>('/auth/sign-up', data, ApiClient.config()).then(d => d.data)
+    return Axios.post<User>('/public/users', data, ApiClient.config()).then(d => d.data)
   }
 
   /**
@@ -45,7 +45,7 @@ export class ApiClient {
    * @param creds User credentials (username & password).
    */
   public static async authenticate(creds: UserCredentials): Promise<ApiClient> {
-    return Axios.post<AccessToken>('auth/sign-in', creds, ApiClient.config()).then(
+    return Axios.post<AccessToken>('public/sign-in', creds, ApiClient.config()).then(
       r => new ApiClient(r.data.accessToken)
     )
   }
