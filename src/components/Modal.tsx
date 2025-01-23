@@ -1,9 +1,16 @@
-// components/Modal.tsx
-import React, { useEffect } from "react";
-import { Drawer, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter, Button } from "@heroui/react";
+import React from "react";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+  Button,
+} from "@heroui/react";
 import Navbar from "./Navbar";
 import NewForm from "./NewForm";
 import OldList from "./OldList";
+import Login from "./Login";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,14 +19,12 @@ interface ModalProps {
   country: any;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose}) => {
-  const [selectedMode, setSelectedMode] = React.useState<"new" | "old" | null>("new");
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  const [selectedMode, setSelectedMode] = React.useState<"new" | "old" | "login" | null>("new");
 
-  const handleModeChange = (value: "new" | "old") => {
+  const handleModeChange = (value: "new" | "old" | "login") => {
     setSelectedMode(value);
   };
-
-
 
   return (
     <Drawer
@@ -32,7 +37,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose}) => {
           <Navbar onSelect={handleModeChange} />
         </DrawerHeader>
         <DrawerBody className="flex-grow">
-          {selectedMode === "new" ? <NewForm /> : <OldList />}
+          {selectedMode === "new" && <NewForm />}
+          {selectedMode === "old" && <OldList />}
+          {selectedMode === "login" && <Login />}
         </DrawerBody>
         <DrawerFooter>
           <Button color="secondary" onPress={onClose}>

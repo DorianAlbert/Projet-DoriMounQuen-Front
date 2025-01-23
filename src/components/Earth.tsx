@@ -11,7 +11,7 @@ interface Country {
     geometry: {
         type: string;
         coordinates: any;
-    };
+    }; sss
 }
 
 interface EarthProps {
@@ -38,20 +38,6 @@ const Earth: React.FC<EarthProps> = ({ onCountrySelect, isModalOpen }) => {
     }, []);
 
     useEffect(() => {
-        if (!isModalOpen) {
-            /* Si la modal est fermée, réinitialiser la sélection et la position du globe
-            setSelectedCountry(null);
-            setGlobePosition({ translateX: 0, scale: 1 }); // Réinitialiser la position et le zoom
-
-
-
-
-            if (globeRef.current) {
-            globeRef.current.pointOfView({ lat: 0, lng: 0, altitude: 1.5 }, 1000); // Recentrer la vue
-                globeRef.current.camera.zoom = 1; // Réinitialiser le zoom
-            }
-            */
-        }
              setGlobePosition({ translateX: 0, scale: 1 }); // Réinitialiser la position et le zoom
              console.log("test")
     }, [isModalOpen]); // Lorsque isModalOpen change, on réinitialise le globe

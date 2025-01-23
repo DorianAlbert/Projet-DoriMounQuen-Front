@@ -1,5 +1,9 @@
 import React, { useState, FormEvent } from 'react';
-import { Form, Input, Button } from '@heroui/react';
+import { Form, Input, Button, useDisclosure,Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter} from '@heroui/react'
 
 interface FormData {
   username: string;
@@ -8,8 +12,16 @@ interface FormData {
 
 const Login: React.FC = () => {
   const [action, setAction] = useState<string | null>(null);
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data: FormData = Object.fromEntries(formData) as FormData;
+    setAction(`submit ${JSON.stringify(data)}`);
+  };
+  const handleLoginSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data: FormData = Object.fromEntries(formData) as FormData;
@@ -21,6 +33,7 @@ const Login: React.FC = () => {
   };
 
   return (
+    <>
     <Form
       className="w-full max-w-xs flex flex-col gap-4"
       validationBehavior="native"
@@ -29,30 +42,29 @@ const Login: React.FC = () => {
     >
       <Input
         isRequired
-        errorMessage="Please enter a valid username"
-        label="Username"
+        errorMessage="Rensigner votre identifiant "
+        label="Pseudo / email"
         labelPlacement="outside"
         name="username"
-        placeholder="Enter your username"
+        placeholder="Pseudo / email"
         type="text"
       />
 
       <Input
         isRequired
-        errorMessage="Please enter a valid email"
-        label="Email"
+        errorMessage="Rensigner votre mot de passe"
+        label="Password"
         labelPlacement="outside"
-        name="email"
-        placeholder="Enter your email"
-        type="email"
+        name="password"
+        placeholder="Mot de passe"
+        type="password"
       />
       <div className="flex gap-2">
         <Button color="primary" type="submit">
-          Submit
+          Sign in
         </Button>
-        <Button type="reset" variant="flat">
-          Reset
-        </Button>
+        <Button onPress={onOpen}>Sign up</Button>
+
       </div>
       {action && (
         <div className="text-small text-default-500">
@@ -60,6 +72,58 @@ const Login: React.FC = () => {
         </div>
       )}
     </Form>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">Register</ModalHeader>
+            <ModalBody>
+              <Form
+                className="w-full max-w-xs flex flex-col gap-4"
+                validationBehavior="native"
+                onSubmit={handleLoginSubmit}
+              >
+                <Input
+                  isRequired
+                  errorMessage="Rensigner votre identifiant "
+                  label="Pseudo / email"
+                  labelPlacement="outside"
+                  name="username"
+                  placeholder="Pseudo / email"
+                  type="text"
+                />
+
+                <Input
+                  isRequired
+                  errorMessage="Rensigner votre mot de passe"
+                  label="Password"
+                  labelPlacement="outside"
+                  name="password"
+                  placeholder="Mot de passe"
+                  type="password"
+                />
+                <div className="flex gap-2">
+                  <Button color="primary" type="submit">
+                    Register
+                  </Button>
+                </div>
+                {action && (
+                  <div className="text-small text-default-500">
+                    Action: <code>{action}</code>
+                  </div>
+                )}
+              </Form>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
+    </>
   );
 };
 

@@ -1,22 +1,27 @@
-// components/NewForm.tsx
 import React, { useState } from "react";
-import { CheckboxGroup, Checkbox, Textarea, Button } from "@heroui/react";
+import { RadioGroup, Radio, Input, Button } from "@heroui/react";
 
 const NewForm: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [textareaValue, setTextareaValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>("");
 
-  const handleOptionChange = (value: string[]) => {
-    setSelectedOption(value[0]); // Gérer un seul choix
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (inputValue.trim() === "") {
+      setSelectedOption(event.target.value);
+    }
   };
 
-  const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTextareaValue(event.target.value);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+    // If text is entered, reset the selected option
+    if (event.target.value.trim() !== "") {
+      setSelectedOption(null);
+    }
   };
 
   const handleSubmit = () => {
-    if (textareaValue.trim()) {
-      console.log("Submit with custom text:", textareaValue);
+    if (inputValue.trim()) {
+      console.log("Submit with custom text:", inputValue);
     } else {
       console.log("Submit with category:", selectedOption);
     }
@@ -24,22 +29,32 @@ const NewForm: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <CheckboxGroup
-        value={selectedOption ? [selectedOption] : []}
-        onChange={handleOptionChange}
+      <RadioGroup
+        value={selectedOption}
+        onChange={handleOptionChange} // Handling the change correctly
         label="Select a topic"
       >
-        <Checkbox value="Histoire">Histoire</Checkbox>
-        <Checkbox value="Politique">Politique</Checkbox>
-        <Checkbox value="Gastronomie">Gastronomie</Checkbox>
-      </CheckboxGroup>
+        <Radio value="Histoire" disabled={!!inputValue}>
+          Histoire
+        </Radio>
+        <Radio value="Politique" disabled={!!inputValue}>
+          Politique
+        </Radio>
+        <Radio value="Gastronomie" disabled={!!inputValue}>
+          Gastronomie
+        </Radio>
+      </RadioGroup>
 
-      <Textarea
-        label="Custom Input"
-        placeholder="Enter custom text"
-        value={textareaValue}
-        onChange={handleTextareaChange}
+      <Input
+        isReadOnly={false}
+        className="max-w-xs"
+        value={inputValue}
+        label="Custom Text"
+        type="text"
+        variant="bordered"
+        onChange={handleInputChange} // Handles text input change
       />
+
       <Button color="primary" onPress={handleSubmit}>
         Submit
       </Button>
