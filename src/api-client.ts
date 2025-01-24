@@ -1,5 +1,5 @@
 import Axios, { AxiosRequestConfig } from 'axios'
-import { AccessToken, User, UserCredentials, UserForCreate } from './types'
+import { AccessToken, AIExchangeIn, AIExchangeOut, User, UserCredentials, UserForCreate } from './types'
 
 export interface ApiError extends Error {}
 
@@ -28,6 +28,14 @@ export class ApiClient {
       d => d.data
     )
   }
+
+  public async fetchUserExchange(data: AIExchangeIn): Promise<AIExchangeOut> {
+    return Axios.post<AIExchangeOut>('/user/exchange', data, ApiClient.config({ headers: this.authorization })).then(
+      d => d.data
+    )
+  }
+
+
 
   /**
    * Register new user with the given data.

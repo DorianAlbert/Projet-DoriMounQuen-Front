@@ -1,4 +1,3 @@
-
 export interface Country {
   properties: {
     ADMIN: string
@@ -29,4 +28,18 @@ export interface User {
 
 export interface AccessToken {
   readonly accessToken: string
+}
+
+export interface AIExchangeOut {
+  readonly id: number
+  readonly topic: string
+  readonly language: string
+  readonly country: string
+  readonly response: string
+}
+
+export interface AIExchangeIn {
+  readonly topic: string
+  readonly language: string
+  readonly country: string
 }
