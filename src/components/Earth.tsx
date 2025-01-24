@@ -101,7 +101,7 @@ export default function Earth() {
         polygonSideColor={() => 'rgba(255, 255, 255, 0.1)'}
         polygonStrokeColor={() => 'rgba(255, 255, 255, 0.5)'}
         polygonLabel={({ properties: d }: any) => `<div class="select-none"><b>${d.ADMIN} (${d.ISO_A2}):</b></div>`}
-        onPolygonHover={(x: any, _) => setHoveredCountry(x as Country)}
+        onPolygonHover={(x: any) => setHoveredCountry(x as Country)}
         onPolygonClick={(x: any) => handlePolygonClick(x as Country)}
         polygonsTransitionDuration={300}
       />

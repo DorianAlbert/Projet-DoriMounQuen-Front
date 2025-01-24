@@ -30,7 +30,7 @@ export class ApiClient {
   }
 
   public async fetchUserExchange(data: AIExchangeIn): Promise<AIExchangeOut> {
-    return Axios.post<AIExchangeOut>('/user/exchange', data, ApiClient.config({ headers: this.authorization })).then(
+    return Axios.post<AIExchangeOut>('/user/exchanges', data, ApiClient.config({ headers: this.authorization })).then(
       d => d.data
     )
   }
