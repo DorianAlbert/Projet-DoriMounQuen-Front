@@ -70,7 +70,7 @@ export default function NewForm() {
         isDisabled={selectedOption != 'Autre'}
       />
       <Button color="primary" onPress={handleSubmit} isLoading={isPending} isDisabled={!canSubmit}>
-        Submit
+        Ask IAmine
       </Button>
       { response && <AIResponse data={response} /> }
     </div>

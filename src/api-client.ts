@@ -1,13 +1,32 @@
 import Axios, { AxiosRequestConfig } from 'axios'
-import { AccessToken, AIExchangeIn, AIExchangeOut, User, UserCredentials, UserForCreate } from './types'
+import {
+  AccessToken,
+  AIExchangeIn,
+  AIExchangeOut,
+  User,
+  UserCredentials,
+  UserForCreate
+} from './types'
 
 export interface ApiError extends Error {}
 
 export class ApiClient {
+  public static readonly COOKIE_KEY = 'AC_AUTH_7k2SRJ4gsR'
+
+  // Authorization (Bearer) to put in request headers.
   private readonly authorization: { Authorization: string }
 
   private constructor(private readonly token: string) {
     this.authorization = { Authorization: `Bearer ${token}` }
+  }
+
+  /**
+   * Save cookie to browser current session.
+   *
+   * [Security]: Security flags was omitted due to ongoing development.
+   */
+  public writeCookie() {
+    document.cookie = `${ApiClient.COOKIE_KEY}=${this.token}`
   }
 
   /**
@@ -30,12 +49,19 @@ export class ApiClient {
   }
 
   public async fetchUserExchange(data: AIExchangeIn): Promise<AIExchangeOut> {
-    return Axios.post<AIExchangeOut>('/user/exchanges', data, ApiClient.config({ headers: this.authorization })).then(
-      d => d.data
-    )
+    return Axios.post<AIExchangeOut>(
+      '/user/exchanges',
+      data,
+      ApiClient.config({ headers: this.authorization })
+    ).then(d => d.data)
   }
 
-
+  public async fetchUserHistory(): Promise<AIExchangeOut[]> {
+    return Axios.get<AIExchangeOut[]>(
+      '/user/exchanges',
+      ApiClient.config({ headers: this.authorization })
+    ).then(d => d.data)
+  }
 
   /**
    * Register new user with the given data.
@@ -56,5 +82,23 @@ export class ApiClient {
     return Axios.post<AccessToken>('public/sign-in', creds, ApiClient.config()).then(
       r => new ApiClient(r.data.accessToken)
     )
+  }
+
+  /**
+   * Try to initialize using cookie.
+   */
+  public static async tryFromCookie(): Promise<ApiClient> {
+    // Find matching cookie in current sessions (document).
+    const result = document.cookie
+      .split(';')
+      .filter(s => s.includes(`${ApiClient.COOKIE_KEY}=`))
+
+    if (result.length >= 1) {
+      const value = result[0].split('=')[1]
+      console.log('jwt(cookie):', value)
+      return Promise.resolve(new ApiClient(value))
+    }
+    
+    return Promise.reject()
   }
 }

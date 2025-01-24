@@ -1,6 +1,6 @@
 import { Tab, Tabs } from '@heroui/react'
 import NewForm from './NewForm'
-import History from './History'
+import QuestionHistory from './QuestionHistory'
 
 export default function QuestionHost() {
   return (
@@ -9,7 +9,7 @@ export default function QuestionHost() {
         <NewForm />
       </Tab>
       <Tab title="My questions">
-        <History />
+        <QuestionHistory />
       </Tab>
     </Tabs>
   )

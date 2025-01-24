@@ -1,12 +1,10 @@
-import ReactMarkdown from "react-markdown";
-import { AIExchangeOut } from "../types";
+import ReactMarkdown from 'react-markdown'
+import { AIExchangeOut } from '../types'
 
 export interface AIResponseProps {
-    data: AIExchangeOut
+  data: AIExchangeOut
 }
 
-export default function AIResponse({data}: AIResponseProps) {
-    return <ReactMarkdown>
-        {data.response}
-    </ReactMarkdown>
+export default function AIResponse({ data }: AIResponseProps) {
+  return <ReactMarkdown>{data.response}</ReactMarkdown>
 }
