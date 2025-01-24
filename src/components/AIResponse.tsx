@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import { AIExchangeOut } from "../types";
 
 export interface AIResponseProps {
@@ -5,7 +6,7 @@ export interface AIResponseProps {
 }
 
 export default function AIResponse({data}: AIResponseProps) {
-    return <div>
+    return <ReactMarkdown>
         {data.response}
-    </div>
+    </ReactMarkdown>
 }

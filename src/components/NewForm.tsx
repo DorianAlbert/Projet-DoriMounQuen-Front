@@ -32,7 +32,7 @@ export default function NewForm() {
   })
 
   const handleSubmit = () => mutate({
-    country: country!.properties.ISO_A2,
+    country: country!.properties.ADMIN,
     language: navigator.language,
     topic: selectedOption !== 'Autre' ? selectedOption! : inputValue
   })
