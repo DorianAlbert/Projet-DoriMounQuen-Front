@@ -8,6 +8,10 @@ export type FormChoice = 'sign-in' | 'sign-up'
 export default function AuthenticationForm() {
   const [tab, setTab] = useState<FormChoice>('sign-in')
 
+  const handleSignUpSuccess = () => {
+    setTab('sign-in') // Changer l'onglet vers la connexion après une inscription réussie
+  }
+
   return (
     <Tabs
       color="primary"
@@ -19,7 +23,7 @@ export default function AuthenticationForm() {
         <SignInForm />
       </Tab>
       <Tab key="sign-up" title="Register">
-        <SignUpForm />
+        <SignUpForm onSignUpSuccess={handleSignUpSuccess} />
       </Tab>
     </Tabs>
   )

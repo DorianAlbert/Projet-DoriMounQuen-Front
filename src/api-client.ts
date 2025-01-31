@@ -16,7 +16,8 @@ export class ApiClient {
   // Authorization (Bearer) to put in request headers.
   private readonly authorization: { Authorization: string }
 
-  private constructor(private readonly token: string) {
+
+  private constructor(private readonly token: string, public readonly user:User) {
     this.authorization = { Authorization: `Bearer ${token}` }
   }
 
@@ -42,8 +43,10 @@ export class ApiClient {
     }
   }
 
-  public async fetchSelf(): Promise<User> {
-    return Axios.get<User>('/user/me', ApiClient.config({ headers: this.authorization })).then(
+  private static async fetchSelf(token: string): Promise<User> {
+    return Axios.get<User>('/user/me', ApiClient.config({ headers: {
+      "Authorization": `Bearer ${token}`
+      } })).then(
       d => d.data
     )
   }
@@ -79,9 +82,10 @@ export class ApiClient {
    * @param creds User credentials (username & password).
    */
   public static async authenticate(creds: UserCredentials): Promise<ApiClient> {
-    return Axios.post<AccessToken>('public/sign-in', creds, ApiClient.config()).then(
-      r => new ApiClient(r.data.accessToken)
+    const token = await Axios.post<AccessToken>('public/sign-in', creds, ApiClient.config()).then(
+      r => r.data.accessToken
     )
+    return ApiClient.fetchSelf(token).then(user=>new ApiClient(token, user))
   }
 
   /**
@@ -95,8 +99,8 @@ export class ApiClient {
 
     if (result.length >= 1) {
       const value = result[0].split('=')[1]
-      console.log('jwt(cookie):', value)
-      return Promise.resolve(new ApiClient(value))
+      return ApiClient.fetchSelf(value).then(user=> new ApiClient(value, user))
+
     }
     
     return Promise.reject()
