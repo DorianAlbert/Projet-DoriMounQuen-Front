@@ -80,10 +80,3 @@ Projet-DoriMounQuen-Front/
 └── README.md           # Ce fichier
 ```
 
-## Contribution
-
-Les contributions sont les bienvenues ! N'hésite pas à ouvrir une issue ou une pull request si tu as des suggestions ou des améliorations.
-
-## Licence
-
-Ce projet est sous licence MIT.
