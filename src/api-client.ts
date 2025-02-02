@@ -3,6 +3,8 @@ import {
   AccessToken,
   AIExchangeIn,
   AIExchangeOut,
+  Prompt,
+  PromptForUpdate,
   User,
   UserCredentials,
   UserForCreate
@@ -16,8 +18,7 @@ export class ApiClient {
   // Authorization (Bearer) to put in request headers.
   private readonly authorization: { Authorization: string }
 
-
-  private constructor(private readonly token: string, public readonly user:User) {
+  private constructor(private readonly token: string, public readonly user: User) {
     this.authorization = { Authorization: `Bearer ${token}` }
   }
 
@@ -44,11 +45,14 @@ export class ApiClient {
   }
 
   private static async fetchSelf(token: string): Promise<User> {
-    return Axios.get<User>('/user/me', ApiClient.config({ headers: {
-      "Authorization": `Bearer ${token}`
-      } })).then(
-      d => d.data
-    )
+    return Axios.get<User>(
+      '/user/me',
+      ApiClient.config({
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    ).then(d => d.data)
   }
 
   public async fetchUserExchange(data: AIExchangeIn): Promise<AIExchangeOut> {
@@ -64,6 +68,21 @@ export class ApiClient {
       '/user/exchanges',
       ApiClient.config({ headers: this.authorization })
     ).then(d => d.data)
+  }
+
+  public async updatePrompt(prompt: PromptForUpdate): Promise<Prompt> {
+    return Axios.post<Prompt>(
+      '/private/prompt/1',
+      prompt,
+      ApiClient.config({ headers: this.authorization })
+    ).then(r => r.data)
+  }
+
+  public async fetchPrompt(): Promise<Prompt> {
+    return Axios.get<Prompt>(
+      '/private/prompt/1',
+      ApiClient.config({ headers: this.authorization })
+    ).then(r => r.data)
   }
 
   /**
@@ -85,7 +104,7 @@ export class ApiClient {
     const token = await Axios.post<AccessToken>('public/sign-in', creds, ApiClient.config()).then(
       r => r.data.accessToken
     )
-    return ApiClient.fetchSelf(token).then(user=>new ApiClient(token, user))
+    return ApiClient.fetchSelf(token).then(user => new ApiClient(token, user))
   }
 
   /**
@@ -93,16 +112,13 @@ export class ApiClient {
    */
   public static async tryFromCookie(): Promise<ApiClient> {
     // Find matching cookie in current sessions (document).
-    const result = document.cookie
-      .split(';')
-      .filter(s => s.includes(`${ApiClient.COOKIE_KEY}=`))
+    const result = document.cookie.split(';').filter(s => s.includes(`${ApiClient.COOKIE_KEY}=`))
 
     if (result.length >= 1) {
       const value = result[0].split('=')[1]
-      return ApiClient.fetchSelf(value).then(user=> new ApiClient(value, user))
-
+      return ApiClient.fetchSelf(value).then(user => new ApiClient(value, user))
     }
-    
+
     return Promise.reject()
   }
 }

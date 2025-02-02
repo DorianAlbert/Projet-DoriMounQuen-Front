@@ -21,9 +21,12 @@ export interface UserForCreate {
   readonly password: string
 }
 
+export type Role = 'ADMIN' | 'USER'
+
 export interface User {
   readonly id: number
   readonly username: string
+  readonly role: Role
 }
 
 export interface AccessToken {
@@ -42,4 +45,13 @@ export interface AIExchangeIn {
   readonly topic: string
   readonly language: string
   readonly country: string
+}
+
+export interface PromptForUpdate {
+  readonly content: string
+}
+
+export interface Prompt {
+  readonly id: number
+  readonly content: string
 }

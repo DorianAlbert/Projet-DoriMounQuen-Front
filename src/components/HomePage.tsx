@@ -2,7 +2,7 @@ import RequireAuthentication from '../contexts/RequireAuthentication'
 import SelectedCountryProvider from '../contexts/SelectedCountryProvider'
 import Earth from './Earth'
 import SidePanel from './SidePanel'
-import Profil from './Profil.tsx'
+import Profile from './Profile.tsx'
 
 export default function HomePage() {
   return (
@@ -10,10 +10,10 @@ export default function HomePage() {
       <SelectedCountryProvider>
         <Earth />
         <RequireAuthentication>
-          <SidePanel />
-          <Profil/>
-
-
+          <>
+            <SidePanel />
+            <Profile />
+          </>
         </RequireAuthentication>
       </SelectedCountryProvider>
     </div>
