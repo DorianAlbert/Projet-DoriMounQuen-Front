@@ -1,50 +1,89 @@
-# React + TypeScript + Vite
+# Projet DoriMounQuen - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bienvenue sur le frontend du projet DoriMounQuen, développé dans le cadre de la formation web Full Stack Ynov.
 
-Currently, two official plugins are available:
+## Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Cette application frontend est construite avec React, TypeScript et Vite. Elle vise à fournir une interface utilisateur réactive et moderne pour notre projet.
 
-## Expanding the ESLint configuration
+## Fonctionnalités
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React** pour une interface utilisateur dynamique.
+- **TypeScript** pour une meilleure gestion des types et une maintenance facilitée.
+- **Vite** pour un bundling rapide et efficace.
+- **ESLint** et **Prettier** pour assurer la qualité et la cohérence du code.
 
-- Configure the top-level `parserOptions` property like this:
+## Prérequis
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+Avant de commencer, assure-toi d'avoir installé :
+
+- [Node.js](https://nodejs.org/) (version 14 ou supérieure)
+- [npm](https://www.npmjs.com/) ou [Yarn](https://yarnpkg.com/)
+
+## Installation
+
+1. Clone le dépôt :
+
+   ```bash
+   git clone https://github.com/DorianAlbert/Projet-DoriMounQuen-Front.git
+   cd Projet-DoriMounQuen-Front
+   ```
+
+2. Installe les dépendances :
+
+   ```bash
+   npm install
+   ```
+
+   ou
+
+   ```bash
+   yarn install
+   ```
+
+## Démarrage
+
+Pour lancer l'application en mode développement :
+
+```bash
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+ou
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+yarn dev
 ```
+
+L'application sera accessible à l'adresse [http://localhost:3000](http://localhost:3000).
+
+## Scripts
+
+- `dev` : démarre l'application en mode développement.
+- `build` : construit l'application pour la production.
+- `lint` : analyse le code pour détecter les problèmes de style et de syntaxe.
+
+## Structure du projet
+
+```bash
+Projet-DoriMounQuen-Front/
+├── public/             # Fichiers statiques
+├── src/                # Code source de l'application
+│   ├── components/     # Composants React
+│   ├── assets/         # Ressources (images, styles, etc.)
+│   ├── App.tsx         # Composant principal
+│   └── main.tsx        # Point d'entrée de l'application
+├── .gitignore          # Fichiers à ignorer par Git
+├── package.json        # Informations sur le projet et dépendances
+├── tsconfig.json       # Configuration TypeScript
+├── vite.config.ts      # Configuration Vite
+└── README.md           # Ce fichier
+```
+
+## Contribution
+
+Les contributions sont les bienvenues ! N'hésite pas à ouvrir une issue ou une pull request si tu as des suggestions ou des améliorations.
+
+## Licence
+
+Ce projet est sous licence MIT.
